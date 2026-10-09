@@ -1,0 +1,93 @@
+########## 数据集：data/processed/dataset_20261006_213420.npz
+########## [1/4] SVM 5 折交叉验证 + 置换检验
+汉语脑电信号分类软件系统　配置：configs/default.yaml　种子：20260913
+
+====================================================================
+  训练与评估 —— SVM（分层交叉验证）
+====================================================================
+[数据] 从缓存载入：data\processed\dataset_20261006_213420.npz
+
+[数据] 1302 试次 × 32 通道 × 307 采样点　类别 ['a1', 'a2', 'a3', 'a4']
+  第 1/5 折完成
+  第 2/5 折完成
+  第 3/5 折完成
+  第 4/5 折完成
+  第 5/5 折完成
+  第 5/5 折完成
+
+【仿真数据】 模型：SVM　划分：5 折交叉验证
+准确率　　：58.9% ± 1.8%　（随机 25.0%）
+宏平均 F1：0.590 ± 0.017
+Cohen's κ：0.452
+相对随机的提升：+45.2%（归一化）
+特征维度：2848
+耗时：71.4 s
+
+[完成] 总耗时 71.4 s
+
+====================================================================
+  置换检验（20 次打乱标签）
+====================================================================
+
+置换检验（20 次打乱标签重跑）：
+  零分布：26.1% ± 3.3%（打乱后模型应接近随机水平）
+  实际观测：58.9%
+  经验 p 值：0.048  ← 显著（p<0.05）
+  耗时：429.1 s
+########## [2/4] CNN 5 折交叉验证
+汉语脑电信号分类软件系统　配置：configs/default.yaml　种子：20260913
+
+====================================================================
+  训练与评估 —— CNN（分层交叉验证）
+====================================================================
+[数据] 从缓存载入：data\processed\dataset_20261006_213420.npz
+
+[数据] 1302 试次 × 32 通道 × 307 采样点　类别 ['a1', 'a2', 'a3', 'a4']
+    轮  10/120　验证宏F1 = 0.691
+    轮  20/120　验证宏F1 = 0.669
+########## [3/4] SVM vs CNN 对比 + HTML 报告
+汉语脑电信号分类软件系统　配置：configs/default.yaml　种子：20260913
+
+====================================================================
+  SVM vs ShallowCNN 分类性能对比
+====================================================================
+[数据] 从缓存载入：data\processed\dataset_20261006_213420.npz
+
+[数据] 1302 试次，4 分类，随机水平 25.0%（仿真）
+
+>>> 正在评估 SVM ...
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+C:\Users\LIU\OneDrive\无名\OneDrive\Desktop\汉语脑电解码系统\src\cneeg\models.py:78: RuntimeWarning: STFT 频率分辨率为 4 Hz（nperseg=64，fs=256 Hz），频带 delta[1,4) 内没有任何频点，已跳过 —— 这些频带不会出现在时频特征里（分频带功率部分仍包含它们）。要覆盖它们请增大 features.stft_nperseg。
+  feats, _ = stft_features(
+
+>>> 正在评估 CNN ...
+########## [4/4] 全部结束

@@ -1,0 +1,140 @@
+# ============================================================================
+#  汉语脑电信号分类软件系统 —— 主配置
+# ----------------------------------------------------------------------------
+#  真数据到手后，只需要改 data.source 那一处（synthetic -> file），其余不动。
+#  所有随机过程都受 seed 控制，同种子同配置 = 完全可复现。
+# ============================================================================
+
+seed: 20260913
+
+# ---------------------------------------------------------------------------
+# 数据
+# ---------------------------------------------------------------------------
+data:
+  # synthetic = 内置仿真数据（当前默认，用于验证流水线）
+  # file      = 真实数据文件（.mff/.edf/.bdf/.fif/.vhdr/.set），走 MNE 适配器
+  source: synthetic
+
+  # ---- 仿真数据参数（source=synthetic 时生效）----
+  synthetic:
+    # 预设：vowel_tone（汉语四声，4类）| mandarin_word（汉语词汇，3类）
+    #       english_word（yes/or/no，3类，对齐现有 PsychoPy 范式）
+    preset: vowel_tone
+
+    n_subjects: 6            # 受试者数 —— 支持跨受试者评估
+    n_sessions: 1            # 每受试者场次（调大会线性增加数据体积）
+    trials_per_class: 60     # 每类每场次试次数
+    n_channels: 32           # 电极数（10-20 系统子集）
+    sfreq: 256.0             # 采样率 Hz
+
+    # ERP 峰值幅度 = 背景 RMS × 10^(snr_db/20)。
+    #
+    # 默认值 +4 经实测标定（scripts/calibrate_snr.py，6 受试者 × 60 试次/类
+    # = 1440 试次，4 分类随机水平 25%）：
+    #     SNR   −12 dB   −8 dB   −4 dB    0 dB   +4 dB
+    #     SVM     37.2%   37.5%   39.8%   47.5%   62.8%
+    #     CNN     25.7%   26.8%   26.1%   46.7%   62.1%
+    # −12～−4 dB 区间 CNN 基本等于随机猜测，作为默认值会让演示"看起来像坏了"；
+    # +4 dB 下两个模型都明显高于随机且性能相当，模型对比才有讨论价值。
+    # 想看 CNN 何时跑输/跑赢 SVM，用 `python -m cneeg sweep` 扫这条曲线 ——
+    # 那才是这个项目真正有价值的实验结论。
+    snr_db: 4.0
+    # 伪迹
+    blink_prob: 0.08         # 每试次出现眨眼伪迹的概率
+    muscle_prob: 0.05        # 肌电噪声
+    line_noise_uv: 3.0       # 50Hz 工频干扰幅度(µV)
+    dropout_prob: 0.02       # 通道脱落概率
+    # 受试者间差异（0=所有人一样，越大越难做跨受试者泛化）
+    subject_variability: 0.35
+
+  # ---- 真实数据参数（source=file 时生效）----
+  file:
+    path: ""                 # 例：D:/eeg/sub-01.mff
+    # PsychoPy 打标日志（trials_*.csv）。留空则改从 EEG 文件内嵌事件轨读 marker
+    marker_log: ""
+    # marker 编码 -> 类别名 的映射。默认对齐 脑电实验/word_reading_eeg.py 的 MARK 表
+    marker_map:
+      "YES ": "yes"
+      "OR  ": "or"
+      "NO  ": "no"
+    montage: "standard_1020"
+    # 真实数据里事件 onset 相对记录起点的偏移（秒），用于修正
+    onset_offset_s: 0.0
+
+# ---------------------------------------------------------------------------
+# 预处理
+# ---------------------------------------------------------------------------
+preprocess:
+  l_freq: 0.5                # 带通下限 Hz
+  h_freq: 40.0               # 带通上限 Hz
+  notch_freq: 50.0           # 陷波（中国市电 50Hz）。设 0 关闭
+  notch_width: 2.0
+  reref: "car"               # car=共同平均参考 | none
+  # 分段
+  tmin: -0.2                 # 相对事件 onset（秒）
+  tmax: 1.0
+  baseline: [-0.2, 0.0]      # 基线区间（秒），null 表示不做基线校正
+  reject_uv: 150.0           # 峰峰值超过该值(µV)的试次判为伪迹剔除。设 0 关闭
+  normalize: "zscore"        # zscore=逐通道标准化 | none
+
+# ---------------------------------------------------------------------------
+# 特征（SVM 基线用）
+# ---------------------------------------------------------------------------
+features:
+  method: "stft"             # stft=STFT 时频 | bandpower=分频带功率
+  # 频带边界（Hz）
+  bands:
+    delta: [1, 4]
+    theta: [4, 8]
+    alpha: [8, 13]
+    beta:  [13, 30]
+    gamma: [30, 40]
+  # STFT 参数
+  stft_nperseg: 64
+  stft_noverlap: 48
+  stft_use_bandpower: true   # 在 STFT 功率谱上再聚合出分频带功率特征
+
+# ---------------------------------------------------------------------------
+# 模型
+# ---------------------------------------------------------------------------
+model:
+  name: "svm"                # svm | cnn
+  svm:
+    C: 1.0
+    gamma: "scale"
+    kernel: "rbf"
+    pca_components: 0        # >0 则先做 PCA 降维
+  cnn:
+    # ShallowConvNet (Schirrmeister et al., 2017)
+    n_filters_time: 40
+    filter_time_length: 25
+    n_filters_spat: 40
+    pool_time_length: 75
+    pool_time_stride: 15
+    dropout: 0.5
+    n_epochs: 120
+    batch_size: 32
+    lr: 0.001
+    weight_decay: 0.0
+    early_stop_patience: 25   # 验证集宏F1 连续多少轮不提升就停
+    class_weight: true        # 类别不平衡时自动加权
+
+# ---------------------------------------------------------------------------
+# 训练 / 评估
+# ---------------------------------------------------------------------------
+train:
+  split: "stratified_kfold"  # stratified_kfold | holdout
+  n_splits: 5                # K 折数
+  test_size: 0.2             # split=holdout 时的测试集比例
+  group_by_subject: false    # true = 留一受试者评估（更严格，结果通常明显更低）
+  permutation_test: true     # 置换检验（阴性对照，证明无数据泄漏）
+  n_permutations: 20         # 置换次数（每次完整重训，耗时 = N × 单次训练）
+
+# ---------------------------------------------------------------------------
+# 输出
+# ---------------------------------------------------------------------------
+output:
+  data_dir: "data"
+  save_figures: true
+  figure_dpi: 150
+  report_title: "汉语脑电信号分类实验报告"

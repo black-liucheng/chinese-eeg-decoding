@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cneeg"
+version = "1.0.0"
+description = "汉语脑电信号分类软件系统 —— 基于深度学习的汉语脑电信号建模与分析"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "北京交通大学 大创项目组" }]
+
+# 注意：torch 不写在这里。它是整个依赖里最大的一块（约 250MB），
+# 而且必须从 PyTorch 官方的 CPU 源装，PyPI 默认给的是带 CUDA 的巨型包。
+# 装法见 requirements.txt 与 README。
+# 版本下限与 requirements.txt 保持一致 —— 两处写不同的下限，
+# 只会在"按文档装完却报错"时白白浪费排查时间。
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "PyYAML>=6.0",
+    "tqdm>=4.66",
+    "joblib>=1.3",
+]
+
+[project.optional-dependencies]
+# 真实脑电文件（.mff/.vhdr/.edf…）需要 mne；只跑仿真数据可以不装
+real = ["mne>=1.6"]
+gui = ["PyQt5>=5.15"]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+cneeg = "cneeg.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

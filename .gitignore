@@ -1,0 +1,36 @@
+# ── 运行产物 ────────────────────────────────────────────────
+# 这些都能重新生成，不入库（仓库体积从 126 MB 降到约 5 MB）
+#   data/processed/  →  python -m cneeg gen-data
+#   data/models/     →  python -m cneeg train --model svm --save-model
+# 图表、报告、截图、答辩材料仍然入库，是实验结果的证据。
+data/processed/
+data/models/
+
+# 真实脑电原始数据（含受试者信息，绝不入库）
+data/raw/*
+!data/raw/.gitkeep
+
+# ── Python ─────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# ── 编辑器 / 系统 ───────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+~$*
+
+# 注意：scripts/*.log 是实验记录，README 里直接引用了，
+# 因此不在此忽略。不要加 *.log。
